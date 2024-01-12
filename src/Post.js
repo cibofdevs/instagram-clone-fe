@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
 import './Post.css';
+import { useEffect, useState } from "react";
 import { Avatar, Button } from "@material-ui/core";
 
 const BASE_URL = "http://localhost:8000/"
