@@ -1,10 +1,10 @@
-import './App.css';
 import { useEffect, useState } from "react";
+import './App.css';
+import Post from "./Post";
 
 function App() {
 
   const BASE_URL = "http://localhost:8000/"
-
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
@@ -27,7 +27,13 @@ function App() {
   }, []);
 
   return (
-    "Hello World!"
+    <div className="app-posts">
+        {
+            posts.map(post => (
+                <Post post={post} />
+            ))
+        }
+    </div>
   );
 }
 
