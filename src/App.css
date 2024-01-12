@@ -9,3 +9,21 @@
 .app-posts {
   padding: 20px;
 }
+
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background-color: white;
+  border-bottom: 1px solid lightgray;
+  object-fit: contain;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+}
+
+.app-header-image {
+  object-fit: contain;
+  width: 150px;
+}
