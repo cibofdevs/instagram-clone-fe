@@ -1,24 +1,33 @@
-import logo from './logo.svg';
 import './App.css';
+import { useEffect, useState } from "react";
 
 function App() {
+
+  const BASE_URL = "http://localhost:8000/"
+
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    fetch(BASE_URL + "post/all")
+        .then(response => {
+          const json = response.json();
+          console.log(json);
+          if (response.ok) {
+              return json;
+          }
+          throw response;
+        })
+        .then(data => {
+            setPosts(data);
+        })
+        .catch(error => {
+            console.log(error);
+            alert(error);
+        })
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    "Hello World!"
   );
 }
 
