@@ -36,6 +36,7 @@ function App() {
     const [openSignUp, setOpenSignUp] = useState(false);
     const [modalStyle, setModalStyle] = useState(getModalStyle);
     const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [authToken, setAuthToken] = useState(null);
     const [authTokenType, setAuthTokenType] = useState(null);
@@ -98,7 +99,7 @@ function App() {
     }, []);
 
     const signIn = (event) => {
-      event.preventDefault();
+      event?.preventDefault();
 
       let formData = new FormData();
       formData.append("username", username);
@@ -138,6 +139,40 @@ function App() {
       setUsername("");
     }
 
+    const signUp = (event) => {
+        event?.preventDefault();
+
+        const jsonString = JSON.stringify({
+            username: username,
+            email: email,
+            password: password
+        });
+
+        const requestOptions = {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: jsonString
+        }
+
+        fetch(BASE_URL + "user", requestOptions)
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw response;
+            })
+            .then(data => {
+                // console.log(data);
+                signIn();
+            })
+            .catch(error => {
+                console.log(error);
+                alert(error);
+            })
+
+        setOpenSignUp(false)
+    }
+
     return (
       <div className="app">
           <Modal open={openSignIn} onClose={() => setOpenSignIn(false)}>
@@ -156,6 +191,30 @@ function App() {
                              onChange={(e) => setPassword(e.target.value)} />
                       <Button type="submit"
                               onClick={signIn}>Login</Button>
+                  </form>
+              </div>
+          </Modal>
+
+          <Modal open={openSignUp} onClose={() => setOpenSignUp(false)}>
+              <div style={modalStyle} className={classes.paper}>
+                  <form className="app-signin">
+                      <center>
+                          <img className="app-header-image" src={"./instagram.png"} alt="Instagram" />
+                      </center>
+                      <Input placeholder="username"
+                             type="text"
+                             value={username}
+                             onChange={(e) => setUsername(e.target.value)} />
+                      <Input placeholder="email"
+                             type="email"
+                             value={email}
+                             onChange={(e) => setEmail(e.target.value)} />
+                      <Input placeholder="password"
+                             type="password"
+                             value={password}
+                             onChange={(e) => setPassword(e.target.value)} />
+                      <Button type="submit"
+                              onClick={signUp}>Sign Up</Button>
                   </form>
               </div>
           </Modal>
