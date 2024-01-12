@@ -29,46 +29,75 @@ const useStyles = makeStyles((theme) => ({
 
 function App() {
 
-  const classes = useStyles();
-  const [posts, setPosts] = useState([]);
-  const [openSignIn, setOpenSignIn] = useState(false);
-  const [openSignUp, setOpenSignUp] = useState(false);
-  const [modalStyle, setModalStyle] = useState(getModalStyle);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [authToken, setAuthToken] = useState(null);
-  const [authTokenType, setAuthTokenType] = useState(null);
-  const [userId, setUserId] = useState("");
+    const classes = useStyles();
 
-  useEffect(() => {
-    fetch(BASE_URL + "post/all")
-        .then(response => {
-          const json = response.json();
-          console.log(json);
-          if (response.ok) {
-              return json;
-          }
-          throw response;
-        })
-        .then(data => {
-            return data.sort((a, b) => {
-                const tsA = a.timestamp.split(/[-T:]/);
-                const tsB = b.timestamp.split(/[-T:]/);
-                const dateA = new Date(Date.UTC(tsA[0], tsA[1] - 1, tsA[2], tsA[3], tsA[4], tsA[5]));
-                const dateB = new Date(Date.UTC(tsB[0], tsB[1] - 1, tsB[2], tsB[3], tsB[4], tsB[5]));
-                return dateB - dateA
-            });
-        })
-        .then(data => {
-            setPosts(data);
-        })
-        .catch(error => {
-            console.log(error);
-            alert(error);
-        })
-  }, []);
+    const [posts, setPosts] = useState([]);
+    const [openSignIn, setOpenSignIn] = useState(false);
+    const [openSignUp, setOpenSignUp] = useState(false);
+    const [modalStyle, setModalStyle] = useState(getModalStyle);
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [authToken, setAuthToken] = useState(null);
+    const [authTokenType, setAuthTokenType] = useState(null);
+    const [userId, setUserId] = useState("");
 
-  const signIn = (event) => {
+    useEffect(() => {
+        const storedAuthToken = window.localStorage.getItem("authToken");
+        const storedAuthTokenType = window.localStorage.getItem("authTokenType");
+        const storedUsername = window.localStorage.getItem("username");
+        const storedUserId = window.localStorage.getItem("userId");
+
+        if (storedAuthToken && storedAuthTokenType && storedUsername && storedUserId) {
+            setAuthToken(storedAuthToken);
+            setAuthTokenType(storedAuthTokenType);
+            setUserId(storedUserId);
+            setUsername(storedUsername);
+        }
+    }, []);
+
+    useEffect(() => {
+        if (authToken && authTokenType && userId && username) {
+            window.localStorage.setItem("authToken", authToken);
+            window.localStorage.setItem("authTokenType", authTokenType);
+            window.localStorage.setItem("username", username);
+            window.localStorage.setItem("userId", userId);
+        } else {
+            window.localStorage.removeItem('authToken');
+            window.localStorage.removeItem('authTokenType');
+            window.localStorage.removeItem('username');
+            window.localStorage.removeItem('userId');
+        }
+    }, [authToken, authTokenType, username, userId]);
+
+    useEffect(() => {
+        fetch(BASE_URL + "post/all")
+            .then(response => {
+              const json = response.json();
+              console.log(json);
+              if (response.ok) {
+                  return json;
+              }
+              throw response;
+            })
+            .then(data => {
+                return data.sort((a, b) => {
+                    const tsA = a.timestamp.split(/[-T:]/);
+                    const tsB = b.timestamp.split(/[-T:]/);
+                    const dateA = new Date(Date.UTC(tsA[0], tsA[1] - 1, tsA[2], tsA[3], tsA[4], tsA[5]));
+                    const dateB = new Date(Date.UTC(tsB[0], tsB[1] - 1, tsB[2], tsB[3], tsB[4], tsB[5]));
+                    return dateB - dateA
+                });
+            })
+            .then(data => {
+                setPosts(data);
+            })
+            .catch(error => {
+                console.log(error);
+                alert(error);
+            })
+    }, []);
+
+    const signIn = (event) => {
       event.preventDefault();
 
       let formData = new FormData();
@@ -100,16 +129,16 @@ function App() {
           })
 
       setOpenSignIn(false);
-  }
+    }
 
-  const signOut = (event) => {
+    const signOut = (event) => {
       setAuthToken(null);
       setAuthTokenType(null);
       setUserId("");
       setUsername("");
-  }
+    }
 
-  return (
+    return (
       <div className="app">
           <Modal open={openSignIn} onClose={() => setOpenSignIn(false)}>
               <div style={modalStyle} className={classes.paper}>
@@ -153,7 +182,7 @@ function App() {
               }
           </div>
       </div>
-  );
+    );
 }
 
 export default App;
