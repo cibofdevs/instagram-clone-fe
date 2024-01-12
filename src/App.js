@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import {useEffect, useState} from "react";
 import './App.css';
 import Post from "./Post";
 
@@ -16,6 +16,15 @@ function App() {
               return json;
           }
           throw response;
+        })
+        .then(data => {
+            return data.sort((a, b) => {
+                const tsA = a.timestamp.split(/[-T:]/);
+                const tsB = b.timestamp.split(/[-T:]/);
+                const dateA = new Date(Date.UTC(tsA[0], tsA[1] - 1, tsA[2], tsA[3], tsA[4], tsA[5]));
+                const dateB = new Date(Date.UTC(tsB[0], tsB[1] - 1, tsB[2], tsB[3], tsB[4], tsB[5]));
+                return dateB - dateA
+            });
         })
         .then(data => {
             setPosts(data);
