@@ -27,3 +27,8 @@
   object-fit: contain;
   width: 150px;
 }
+
+.app-signin {
+  display: flex;
+  flex-direction: column;
+}
