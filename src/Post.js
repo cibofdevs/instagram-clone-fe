@@ -7,7 +7,8 @@ const BASE_URL = "http://localhost:8000/"
 function Post({ post, authToken, authTokenType }) {
 
     const [imageUrl, setImageUrl] = useState("");
-    const [comments, setComments] = useState([])
+    const [comments, setComments] = useState([]);
+    const [newComment, setNewComment] = useState("");
 
 
     useEffect(() => {
@@ -44,6 +45,10 @@ function Post({ post, authToken, authTokenType }) {
             })
     }
 
+    const postComment = (event) => {
+
+    }
+
     return (
         <div className="post">
             <div className="post-header">
@@ -62,6 +67,21 @@ function Post({ post, authToken, authTokenType }) {
                     ))
                 }
             </div>
+
+            { authToken && (
+                <form className="post-comment-box">
+                    <input type="text"
+                           className="post-input"
+                           placeholder="Add a comment"
+                           value={newComment}
+                           onChange={(e) => setNewComment(e.target.value)} />
+                    <button type="submit"
+                            className="post-button"
+                            disabled={!newComment}
+                            onClick={postComment}>Comment</button>
+                </form>
+            )
+            }
         </div>
     )
 }
