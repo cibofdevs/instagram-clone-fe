@@ -4,7 +4,7 @@ import { Button } from "@material-ui/core";
 
 const BASE_URL = "http://localhost:8000/"
 
-function ImageUpload({ authToken, authTokenType }) {
+function ImageUpload({ authToken, authTokenType, userId }) {
 
     const [caption, setCaption] = useState("");
     const [image, setImage] = useState(null)
@@ -37,7 +37,7 @@ function ImageUpload({ authToken, authTokenType }) {
                 throw response;
             })
             .then(data => {
-                // TODO: Create Post
+                createPost(data.filename)
             })
             .catch(error => {
                 console.log(error)
@@ -46,6 +46,39 @@ function ImageUpload({ authToken, authTokenType }) {
                 setCaption("");
                 setImage(null);
                 document.getElementById("fileInput").value = null;
+            })
+    }
+
+    const createPost = (imageUrl) => {
+        const jsonString = JSON.stringify({
+            "image_url": imageUrl,
+            "image_url_type": "relative",
+            "caption": caption,
+            "creator_id": userId
+        })
+
+        const requestOptions = {
+            method: "POST",
+            headers: new Headers({
+                "Authorization": authTokenType + " " + authToken,
+                "Content-Type": "application/json"
+            }),
+            body: jsonString
+        }
+
+        fetch(BASE_URL + "post", requestOptions)
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw response;
+            })
+            .then(data => {
+                window.location.reload();
+                window.scrollTo(0, 0);
+            })
+            .catch(error => {
+                console.log(error);
             })
     }
 
